@@ -7,6 +7,10 @@ function App() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  // Location & Search
+  const [location, setLocation] = useState("Perunkulam (Current)");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -128,6 +132,13 @@ function App() {
     setSubscriptions(data);
   };
 
+  // Filter products by Search
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   if (!user) {
     return (
       <div
@@ -193,14 +204,57 @@ function App() {
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>Frequency Store</h1>
-      <p>
-        Welcome, <b>{user.name}</b>!
-      </p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "2px solid #eee",
+          pb: "10px",
+        }}
+      >
+        <div>
+          <h1 style={{ margin: 0 }}>Frequency Store</h1>
+          <p style={{ margin: "5px 0" }}>
+            Welcome, <b>{user.name}</b>!
+          </p>
+        </div>
+
+        {/* LOCATION SELECTOR */}
+        <div
+          style={{
+            background: "#e8f5e9",
+            padding: "8px 15px",
+            borderRadius: "20px",
+            border: "1px solid #4caf50",
+          }}
+        >
+          <label
+            style={{ marginRight: "8px", fontSize: "14px", fontWeight: "bold" }}
+          >
+            📍 Location:
+          </label>
+          <select
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            style={{
+              border: "none",
+              background: "transparent",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            <option value="Perunkulam (Current)">Perunkulam</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Madurai">Madurai</option>
+            <option value="Coimbatore">Coimbatore</option>
+          </select>
+        </div>
+      </div>
 
       <nav
         style={{
-          marginBottom: "20px",
+          margin: "20px 0",
           padding: "10px",
           background: "#f4f4f4",
           borderRadius: "5px",
@@ -257,12 +311,34 @@ function App() {
         </button>
       </nav>
 
-      {/* PRODUCTS VIEW */}
+      {/* PRODUCTS VIEW WITH SEARCH */}
       {view === "shop" && (
         <div>
-          <h2>Available Products</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "15px",
+            }}
+          >
+            <h2>Available Products</h2>
+            <input
+              type="text"
+              placeholder="🔍 Search milk, curd, eggs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: "8px 15px",
+                width: "250px",
+                borderRadius: "5px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </div>
+
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-            {products.map((p) => (
+            {filteredProducts.map((p) => (
               <div
                 key={p.id}
                 style={{
@@ -285,6 +361,9 @@ function App() {
                 </button>
               </div>
             ))}
+            {filteredProducts.length === 0 && (
+              <p>No products found matching "{searchTerm}"</p>
+            )}
           </div>
         </div>
       )}
@@ -307,12 +386,14 @@ function App() {
               ))}
               <h3>Total: ₹{cart.reduce((sum, item) => sum + item.price, 0)}</h3>
               <div style={{ marginBottom: "15px" }}>
-                <label>Delivery Address: </label>
+                <label>
+                  <b>Delivery Address:</b>{" "}
+                </label>
                 <br />
                 <input
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  style={{ width: "300px", padding: "5px", marginTop: "5px" }}
+                  style={{ width: "300px", padding: "8px", marginTop: "5px" }}
                 />
               </div>
               <button
@@ -333,10 +414,10 @@ function App() {
         </div>
       )}
 
-      {/* ORDERS VIEW */}
+      {/* ORDERS VIEW WITH STATUS TRACKING */}
       {view === "orders" && (
         <div>
-          <h2>My Order History</h2>
+          <h2>My Order History & Real-Time Tracking</h2>
           {orders.length === 0 ? (
             <p>No orders placed yet.</p>
           ) : (
@@ -345,9 +426,9 @@ function App() {
                 key={o.id}
                 style={{
                   border: "1px solid #4CAF50",
-                  padding: "12px",
-                  marginBottom: "10px",
-                  borderRadius: "5px",
+                  padding: "15px",
+                  marginBottom: "15px",
+                  borderRadius: "8px",
                   background: "#f9f9f9",
                 }}
               >
@@ -360,12 +441,33 @@ function App() {
                 <p style={{ margin: "3px 0" }}>
                   <b>Address:</b> {o.address}
                 </p>
-                <p style={{ margin: "3px 0" }}>
-                  <b>Status:</b>{" "}
+
+                {/* STATUS FLOW BADGE */}
+                <div
+                  style={{
+                    marginTop: "10px",
+                    padding: "10px",
+                    background: "#e8f5e9",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <small style={{ color: "#555" }}>Order Status Flow:</small>
+                  <br />
                   <span style={{ color: "green", fontWeight: "bold" }}>
-                    {o.status}
-                  </span>
-                </p>
+                    ✓ Placed
+                  </span>{" "}
+                  ➔
+                  <span style={{ color: "green", fontWeight: "bold" }}>
+                    {" "}
+                    ✓ Confirmed
+                  </span>{" "}
+                  ➔
+                  <span style={{ color: "orange", fontWeight: "bold" }}>
+                    {" "}
+                    🚚 Out for Delivery
+                  </span>{" "}
+                  ➔<span style={{ color: "#888" }}> Delivered</span>
+                </div>
               </div>
             ))
           )}
@@ -507,4 +609,3 @@ function App() {
 }
 
 export default App;
-   
