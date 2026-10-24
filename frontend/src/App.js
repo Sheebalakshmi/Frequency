@@ -19,9 +19,9 @@ function App() {
 
   // Checkout Payment & Address State
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("COD"); // Default COD
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
-  // Orders State (Fetched from Flask Backend)
+  // Orders State
   const [orders, setOrders] = useState([]);
 
   // Fetch Orders from Flask API
@@ -42,22 +42,13 @@ function App() {
   }, []);
 
   // Subscriptions State
-  const [subscriptions, setSubscriptions] = useState([
-    {
-      id: "SUB-401",
-      item: "A2 Desi Cow Milk",
-      qty: "1 Packet (500ml)",
-      frequency: "Daily Morning",
-      startDate: "2026-10-01",
-      status: "Active",
-    },
-  ]);
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  // Form States
-  const [subItem, setSubItem] = useState("Farm Fresh Cow Milk");
+  // Subscription Selection State
+  const [selectedPlan, setSelectedPlan] = useState("Daily Regular");
+  const [subItem, setSubItem] = useState("A2 Desi Cow Milk");
   const [subQty, setSubQty] = useState("1 Packet (500ml)");
-  const [subFreq, setSubFreq] = useState("Daily Morning");
-  const [subDate, setSubDate] = useState("2026-10-16");
+  const [subDate, setSubDate] = useState("2026-10-25");
 
   // Authentication System
   const [registeredUsers, setRegisteredUsers] = useState([]);
@@ -70,67 +61,156 @@ function App() {
   const [authPassword, setAuthPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
+  // TAMIL NADU CITIES LIST
+  const tnLocations = [
+    "Perunkulam",
+    "Chennai",
+    "Madurai",
+    "Coimbatore",
+    "Tirunelveli",
+    "Trichy",
+    "Salem",
+    "Erode",
+    "Vellore",
+    "Thanjavur",
+    "Kanyakumari",
+    "Nagercoil",
+    "Tuticorin",
+    "Dindigul",
+    "Theni",
+    "Virudhunagar",
+    "Karur",
+    "Namakkal",
+    "Tiruppur",
+    "Cuddalore",
+    "Kanchipuram",
+    "Tiruvallur",
+  ];
+
+  // RICH DAIRY CATALOGUE
   const products = [
     {
       id: 1,
-      name: "Farm Fresh Cow Milk",
-      category: "Dairy",
-      price: 60,
-      unit: "500 ml",
-      image: "🥛",
-      desc: "Pure pasteurized cow milk delivered straight from local farms.",
-    },
-    {
-      id: 2,
-      name: "Buffalo Rich Milk",
-      category: "Dairy",
-      price: 70,
-      unit: "500 ml",
-      image: "🫙",
-      desc: "Creamy and rich heavy fat milk for tea and coffee lovers.",
-    },
-    {
-      id: 3,
       name: "A2 Desi Cow Milk",
-      category: "Dairy",
+      category: "Milk",
       price: 90,
       unit: "500 ml",
       image: "🐄",
-      desc: "Organic A2 protein milk ideal for kids and health conscious.",
+      desc: "Organic A2 protein milk rich in nutrients, delivered raw and pure.",
+    },
+    {
+      id: 2,
+      name: "Farm Fresh Cow Milk",
+      category: "Milk",
+      price: 60,
+      unit: "500 ml",
+      image: "🥛",
+      desc: "Pasteurized pure cow milk delivered straight from local ethical farms.",
+    },
+    {
+      id: 3,
+      name: "Buffalo Rich Fat Milk",
+      category: "Milk",
+      price: 70,
+      unit: "500 ml",
+      image: "🫙",
+      desc: "Creamy high-fat buffalo milk for thick tea, coffee, and traditional sweets.",
     },
     {
       id: 4,
-      name: "Fresh Farm Curd",
-      category: "Dairy",
-      price: 45,
-      unit: "400 g",
-      image: "🥣",
-      desc: "Thick, set probiotic curd made with pure milk cultures.",
+      name: "Full Cream Gold Milk",
+      category: "Milk",
+      price: 65,
+      unit: "500 ml",
+      image: "✨",
+      desc: "Rich standardized full cream milk ideal for everyday family health.",
     },
     {
       id: 5,
-      name: "Organic Brown Eggs",
-      category: "Grocery",
-      price: 75,
-      unit: "6 Pack",
-      image: "🥚",
-      desc: "Free-range organic farm eggs loaded with natural protein.",
+      name: "Toned Low Fat Milk",
+      category: "Milk",
+      price: 50,
+      unit: "500 ml",
+      image: "🍶",
+      desc: "Light, low-fat healthy milk balanced for fitness and easy digestion.",
     },
     {
       id: 6,
-      name: "Wild Forest Honey",
-      category: "Grocery",
-      price: 280,
-      unit: "250 g",
-      image: "🍯",
-      desc: "100% pure raw wild honey harvested from deep dense forests.",
+      name: "Traditional Thick Curd",
+      category: "Dairy & Curd",
+      price: 45,
+      unit: "400 g",
+      image: "🥣",
+      desc: "Thick set probiotic curd churned with authentic traditional cultures.",
+    },
+    {
+      id: 7,
+      name: "Pure Country Cow Ghee",
+      category: "Ghee & Butter",
+      price: 450,
+      unit: "500 g",
+      image: "🏺",
+      desc: "Aromatic golden cow ghee prepared using traditional bilona method.",
+    },
+    {
+      id: 8,
+      name: "Fresh Farm Malai Paneer",
+      category: "Cheese & Paneer",
+      price: 120,
+      unit: "200 g",
+      image: "🧀",
+      desc: "Soft, melt-in-mouth cottage cheese crafted fresh every morning.",
+    },
+    {
+      id: 9,
+      name: "Unsalted Cultured Butter",
+      category: "Ghee & Butter",
+      price: 140,
+      unit: "200 g",
+      image: "🧈",
+      desc: "Pure white farm butter churned freshly without artificial salt.",
+    },
+    {
+      id: 10,
+      name: "Rich Cooking Malai Cream",
+      category: "Dairy & Curd",
+      price: 95,
+      unit: "200 g",
+      image: "🥣",
+      desc: "Thick natural fresh cream for gravies, desserts, and bakery recipes.",
+    },
+    {
+      id: 11,
+      name: "Chilled Badam Milk Drink",
+      category: "Beverages",
+      price: 40,
+      unit: "200 ml",
+      image: "🍾",
+      desc: "Refrigerated milk drink infused with real almond bits and saffron.",
+    },
+    {
+      id: 12,
+      name: "Spiced Buttermilk (Mor)",
+      category: "Beverages",
+      price: 25,
+      unit: "300 ml",
+      image: "🥛",
+      desc: "Cooling probiotic buttermilk flavored with curry leaves, ginger & chillies.",
     },
   ];
 
-  // Cart Functions with Strict Login Guard
+  // Logout Function with Cart Reset
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCart([]);
+    setCurrentView("home");
+    showToast("Logged out successfully.");
+  };
+
+  // Cart Functions
   const addToCart = (product) => {
     if (!currentUser) {
-      showToast("⚠️ Please Login or Sign Up first to add items to cart!");
+      showToast("⚠️ Please Login or Sign Up first to add items!");
       setCurrentView("login");
       return;
     }
@@ -195,9 +275,7 @@ function App() {
         return;
       }
       if (registeredUsers.some((u) => u.email === emailTrim)) {
-        setAuthError(
-          "This email is already registered! Please click Login below.",
-        );
+        setAuthError("This email is already registered! Please Login below.");
         return;
       }
 
@@ -208,6 +286,7 @@ function App() {
       };
       setRegisteredUsers([...registeredUsers, newUser]);
       setCurrentUser(newUser);
+      setCart([]);
 
       setAuthName("");
       setAuthEmail("");
@@ -220,6 +299,7 @@ function App() {
       );
       if (user) {
         setCurrentUser(user);
+        setCart([]);
         setAuthName("");
         setAuthEmail("");
         setAuthPassword("");
@@ -233,7 +313,7 @@ function App() {
     }
   };
 
-  // Checkout with Payment Method Sending to Flask Backend API
+  // Checkout with Payment Method Sending to Backend
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!address) {
@@ -243,9 +323,11 @@ function App() {
 
     const newOrderData = {
       id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+      userEmail: currentUser.email, // Tag order strictly with logged-in user email
+      userName: currentUser.name,
       items: cart.map((i) => `${i.name} (${i.qty}x)`).join(", "),
       total: calculateTotal(),
-      address: address,
+      address: `${address} (${location})`,
       payment: paymentMethod,
       status: "Order Placed & Confirmed",
       date:
@@ -292,8 +374,8 @@ function App() {
     showToast(`Order ${orderId} cancelled successfully.`);
   };
 
-  const handleCreateSubscription = (e) => {
-    e.preventDefault();
+  // Visual Plan Subscription Handler
+  const handleCreateSubscription = (planName) => {
     if (!currentUser) {
       showToast("⚠️ Please Login first to schedule milk subscription!");
       setCurrentView("login");
@@ -302,14 +384,21 @@ function App() {
 
     const newSub = {
       id: "SUB-" + Math.floor(1000 + Math.random() * 9000),
+      userEmail: currentUser.email, // Tag subscription strictly with logged-in user email
+      userName: currentUser.name,
       item: subItem,
       qty: subQty,
-      frequency: subFreq,
+      frequency: planName || selectedPlan,
       startDate: subDate,
       status: "Active",
+      price: subItem.includes("A2")
+        ? "₹90/day"
+        : subItem.includes("Buffalo")
+          ? "₹70/day"
+          : "₹60/day",
     };
     setSubscriptions([newSub, ...subscriptions]);
-    showToast("Milk subscription scheduled successfully! 🥛");
+    showToast(`${planName || selectedPlan} Subscription Scheduled! 🥛`);
     setCurrentView("subscriptions");
   };
 
@@ -322,6 +411,15 @@ function App() {
     showToast("Subscription cancelled.");
   };
 
+  // STRICT USER-SPECIFIC DATA FILTER
+  const userOrders = currentUser
+    ? orders.filter((o) => o.userEmail === currentUser.email)
+    : [];
+
+  const userSubscriptions = currentUser
+    ? subscriptions.filter((s) => s.userEmail === currentUser.email)
+    : [];
+
   const filteredProducts = products.filter(
     (p) =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -331,10 +429,10 @@ function App() {
   return (
     <div
       style={{
-        backgroundColor: "#f8fafc",
+        backgroundColor: "#0f172a",
         minHeight: "100vh",
-        color: "#1e293b",
-        fontFamily: "sans-serif",
+        color: "#f8fafc",
+        fontFamily: '"Playfair Display", Georgia, serif',
       }}
     >
       {/* TOAST NOTIFICATION */}
@@ -344,61 +442,83 @@ function App() {
             position: "fixed",
             bottom: "24px",
             right: "24px",
-            background: "#0056b3",
+            background: "#d97706",
             color: "#fff",
-            padding: "14px 24px",
-            borderRadius: "12px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+            padding: "14px 28px",
+            borderRadius: "8px",
+            boxShadow: "0 15px 35px rgba(0,0,0,0.4)",
             zIndex: 9999,
             fontWeight: "700",
             fontSize: "14px",
+            letterSpacing: "0.5px",
           }}
         >
           {toastMessage}
         </div>
       )}
 
-      {/* HEADER NAVBAR */}
+      {/* FLAVIO STYLE HEADER NAVBAR */}
       <header
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "16px 50px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+          padding: "18px 50px",
+          backgroundColor: "#090d16",
+          borderBottom: "1px solid #1e293b",
           position: "sticky",
           top: 0,
           zIndex: 1000,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
-          <h1
+        <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+          <div
             onClick={() => setCurrentView("home")}
-            style={{
-              color: "#0056b3",
-              fontSize: "28px",
-              fontWeight: "900",
-              fontStyle: "italic",
-              cursor: "pointer",
-              margin: 0,
-            }}
+            style={{ cursor: "pointer", textAlign: "left" }}
           >
-            Frequency
-          </h1>
+            <h1
+              style={{
+                color: "#fbbf24",
+                fontSize: "28px",
+                fontWeight: "900",
+                letterSpacing: "2px",
+                margin: 0,
+                textTransform: "uppercase",
+                fontFamily: "serif",
+              }}
+            >
+              FREQUENCY
+            </h1>
+            <span
+              style={{
+                fontSize: "9px",
+                color: "#94a3b8",
+                letterSpacing: "3px",
+                textTransform: "uppercase",
+                display: "block",
+              }}
+            >
+              PURE DAIRY & ESSENTIALS
+            </span>
+          </div>
 
+          {/* LOCATION SELECTOR */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              background: "#f1f5f9",
-              border: "1px solid #e2e8f0",
-              borderRadius: "10px",
-              padding: "8px 14px",
+              background: "#1e293b",
+              border: "1px solid #334155",
+              borderRadius: "6px",
+              padding: "6px 14px",
               gap: "8px",
             }}
           >
-            <span>📍</span>
+            <span
+              style={{ fontSize: "12px", color: "#fbbf24", fontWeight: "700" }}
+            >
+              📍 LOCATION
+            </span>
             <select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -408,13 +528,16 @@ function App() {
                 outline: "none",
                 fontWeight: "600",
                 cursor: "pointer",
-                color: "#334155",
-                fontSize: "14px",
+                color: "#f8fafc",
+                fontSize: "13px",
+                fontFamily: "sans-serif",
               }}
             >
-              <option value="Perunkulam">Perunkulam</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Madurai">Madurai</option>
+              {tnLocations.map((loc) => (
+                <option key={loc} value={loc} style={{ background: "#0f172a" }}>
+                  {loc}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -422,10 +545,13 @@ function App() {
         <nav
           style={{
             display: "flex",
-            gap: "22px",
+            gap: "24px",
             alignItems: "center",
-            fontSize: "15px",
-            fontWeight: "600",
+            fontSize: "12px",
+            fontWeight: "700",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            fontFamily: "sans-serif",
           }}
         >
           <button
@@ -438,16 +564,16 @@ function App() {
             onClick={() => setCurrentView("catalog")}
             style={navLinkStyle(currentView === "catalog")}
           >
-            Products
+            Dairy Catalogue
           </button>
           <button
             onClick={() => setCurrentView("subscriptionForm")}
             style={{
               ...navLinkStyle(currentView === "subscriptionForm"),
-              color: "#0056b3",
+              color: "#fbbf24",
             }}
           >
-            🥛 Subscribe
+            ✨ Subscribe Milk
           </button>
           <button
             onClick={() => setCurrentView("subscriptions")}
@@ -472,32 +598,30 @@ function App() {
               }
             }}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "#0056b3",
+              background: "#d97706",
               color: "#fff",
               border: "none",
-              padding: "10px 18px",
-              borderRadius: "10px",
-              fontWeight: "700",
+              padding: "9px 18px",
+              borderRadius: "4px",
+              fontWeight: "800",
               cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(0,86,179,0.2)",
+              letterSpacing: "1px",
+              boxShadow: "0 4px 15px rgba(217,119,6,0.3)",
             }}
           >
-            <span>🛒</span> Cart ({totalCartItemsCount})
+            CART ({currentUser ? totalCartItemsCount : 0})
           </button>
 
           {currentUser ? (
             <button
               onClick={() => setCurrentView("profile")}
               style={{
-                background: "#e0f2fe",
-                color: "#0369a1",
-                border: "1px solid #bae6fd",
+                background: "#1e293b",
+                color: "#fbbf24",
+                border: "1px solid #fbbf24",
                 padding: "8px 16px",
-                borderRadius: "8px",
-                fontSize: "14px",
+                borderRadius: "4px",
+                fontSize: "12px",
                 fontWeight: "700",
                 cursor: "pointer",
               }}
@@ -515,13 +639,13 @@ function App() {
                 background: "#10b981",
                 color: "#fff",
                 border: "none",
-                padding: "9px 18px",
-                borderRadius: "8px",
+                padding: "8px 18px",
+                borderRadius: "4px",
                 fontWeight: "700",
                 cursor: "pointer",
               }}
             >
-              Login / Sign Up
+              SIGN IN
             </button>
           )}
         </nav>
@@ -529,7 +653,7 @@ function App() {
 
       {/* MAIN CONTAINER */}
       <main
-        style={{ padding: "40px 50px", maxWidth: "1280px", margin: "0 auto" }}
+        style={{ padding: "40px 50px", maxWidth: "1350px", margin: "0 auto" }}
       >
         {/* 1. HOME VIEW */}
         {currentView === "home" && (
@@ -537,79 +661,95 @@ function App() {
             <div
               style={{
                 background:
-                  'linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url("https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1400&q=80") center/cover',
-                borderRadius: "24px",
-                padding: "70px 30px",
+                  'linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), url("https://images.unsplash.com/photo-1528498033373-3c6c08e93d79?auto=format&fit=crop&w=1600&q=80") center/cover',
+                borderRadius: "12px",
+                padding: "80px 30px",
                 textAlign: "center",
                 color: "#fff",
-                marginBottom: "45px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                marginBottom: "50px",
+                border: "1px solid #1e293b",
               }}
             >
-              <h2
+              <span
                 style={{
-                  fontSize: "38px",
+                  color: "#fbbf24",
+                  letterSpacing: "4px",
+                  textTransform: "uppercase",
+                  fontSize: "12px",
                   fontWeight: "800",
-                  marginBottom: "12px",
+                  display: "block",
+                  marginBottom: "10px",
+                  fontFamily: "sans-serif",
                 }}
               >
-                Fresh Dairy & Essentials at Your Doorstep
+                SERVING ALL ACROSS TAMIL NADU
+              </span>
+              <h2
+                style={{
+                  fontSize: "44px",
+                  fontWeight: "400",
+                  marginBottom: "16px",
+                  letterSpacing: "1px",
+                }}
+              >
+                100% Pure Dairy Delivered Before 7 AM
               </h2>
               <p
-                style={{ fontSize: "17px", marginBottom: "35px", opacity: 0.9 }}
+                style={{
+                  fontSize: "15px",
+                  marginBottom: "35px",
+                  color: "#cbd5e1",
+                  maxWidth: "650px",
+                  margin: "0 auto 35px auto",
+                  fontFamily: "sans-serif",
+                  fontWeight: "300",
+                  lineHeight: "1.7",
+                }}
               >
-                Pure farm milk and daily organic essentials delivered before
-                7:00 AM.
+                Delivering fresh A2 cow milk, thick curd, aromatic ghee, malai
+                paneer, and rich butter directly to your doorstep in{" "}
+                <b>{location}</b>.
               </p>
 
               <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  maxWidth: "650px",
+                  maxWidth: "600px",
                   margin: "0 auto",
-                  background: "#fff",
-                  borderRadius: "14px",
-                  padding: "8px",
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                  background: "#090d16",
+                  borderRadius: "6px",
+                  padding: "6px",
+                  border: "1px solid #334155",
                 }}
               >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    paddingLeft: "15px",
-                    fontSize: "18px",
-                  }}
-                >
-                  🔍
-                </span>
                 <input
                   type="text"
-                  placeholder="Search for milk, curd, eggs..."
+                  placeholder="Search A2 milk, paneer, ghee, curd, mor..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{
                     width: "100%",
                     border: "none",
-                    padding: "12px 15px",
-                    fontSize: "16px",
+                    padding: "12px 20px",
+                    fontSize: "15px",
                     outline: "none",
-                    color: "#1e293b",
+                    color: "#f8fafc",
+                    background: "transparent",
+                    fontFamily: "sans-serif",
                   }}
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery("")}
                     style={{
-                      background: "#e2e8f0",
-                      color: "#475569",
+                      background: "#334155",
+                      color: "#cbd5e1",
                       border: "none",
-                      padding: "12px 18px",
-                      borderRadius: "10px",
-                      fontWeight: "700",
+                      padding: "10px 20px",
+                      borderRadius: "4px",
                       cursor: "pointer",
-                      marginRight: "8px",
+                      fontFamily: "sans-serif",
                     }}
                   >
                     Clear
@@ -618,24 +758,29 @@ function App() {
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "25px",
-              }}
-            >
+            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              <span
+                style={{
+                  color: "#fbbf24",
+                  fontSize: "12px",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  fontWeight: "800",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                FRESH DAIRY SELECTION
+              </span>
               <h3
                 style={{
-                  fontSize: "24px",
-                  fontWeight: "800",
-                  color: "#0f172a",
+                  fontSize: "32px",
+                  fontWeight: "400",
+                  margin: "8px 0 0 0",
                 }}
               >
                 {searchQuery
-                  ? `Search Results for "${searchQuery}"`
-                  : "Popular Fresh Products"}
+                  ? `Results for "${searchQuery}"`
+                  : "Daily Dairy & Milk Items"}
               </h3>
             </div>
 
@@ -643,7 +788,7 @@ function App() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "25px",
+                gap: "30px",
               }}
             >
               {filteredProducts.map((product) => {
@@ -652,168 +797,159 @@ function App() {
                   <div
                     key={product.id}
                     style={{
-                      background: "#fff",
-                      borderRadius: "18px",
-                      overflow: "hidden",
-                      boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                      border: "1px solid #e2e8f0",
+                      background: "#090d16",
+                      borderRadius: "10px",
+                      border: "1px solid #1e293b",
+                      padding: "25px",
                       display: "flex",
                       flexDirection: "column",
                     }}
                   >
                     <div
                       style={{
-                        height: "170px",
-                        background: "#f8fafc",
+                        height: "160px",
+                        background: "#0f172a",
+                        borderRadius: "8px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "64px",
-                        position: "relative",
+                        marginBottom: "18px",
+                        border: "1px solid #1e293b",
                       }}
                     >
                       {product.image}
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: "12px",
-                          right: "12px",
-                          background: "#e0f2fe",
-                          color: "#0369a1",
-                          padding: "4px 10px",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                          fontWeight: "700",
-                        }}
-                      >
-                        {product.category}
-                      </span>
                     </div>
                     <div
                       style={{
-                        padding: "20px",
                         display: "flex",
-                        flexDirection: "column",
-                        flexGrow: 1,
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: "8px",
                       }}
                     >
                       <h4
                         style={{
-                          margin: "0 0 6px 0",
-                          fontSize: "18px",
-                          fontWeight: "700",
-                          color: "#0f172a",
+                          margin: 0,
+                          fontSize: "20px",
+                          fontWeight: "400",
+                          color: "#f8fafc",
                         }}
                       >
                         {product.name}
                       </h4>
-                      <p
+                      <span
                         style={{
-                          color: "#64748b",
-                          fontSize: "13px",
-                          marginBottom: "20px",
-                          flexGrow: 1,
-                          lineHeight: "1.5",
+                          color: "#fbbf24",
+                          fontSize: "17px",
+                          fontWeight: "700",
+                          fontFamily: "sans-serif",
                         }}
                       >
-                        {product.desc}
-                      </p>
+                        ₹{product.price}
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        color: "#d97706",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                        fontWeight: "700",
+                        marginBottom: "10px",
+                        fontFamily: "sans-serif",
+                      }}
+                    >
+                      {product.category} • {product.unit}
+                    </span>
+                    <p
+                      style={{
+                        color: "#94a3b8",
+                        fontSize: "13px",
+                        marginBottom: "20px",
+                        lineHeight: "1.5",
+                        flexGrow: 1,
+                        fontFamily: "sans-serif",
+                        fontWeight: "300",
+                      }}
+                    >
+                      {product.desc}
+                    </p>
 
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          borderTop: "1px solid #f1f5f9",
-                          paddingTop: "15px",
-                        }}
-                      >
-                        <div>
-                          <span
+                    <div
+                      style={{
+                        borderTop: "1px solid #1e293b",
+                        paddingTop: "16px",
+                      }}
+                    >
+                      {qty === 0 ? (
+                        <button
+                          onClick={() => addToCart(product)}
+                          style={{
+                            background: "#d97706",
+                            color: "#fff",
+                            border: "none",
+                            width: "100%",
+                            padding: "11px",
+                            borderRadius: "4px",
+                            fontWeight: "800",
+                            cursor: "pointer",
+                            letterSpacing: "1px",
+                            fontSize: "12px",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          + ADD TO BASKET
+                        </button>
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            background: "#1e293b",
+                            borderRadius: "4px",
+                            padding: "4px 10px",
+                          }}
+                        >
+                          <button
+                            onClick={() => decreaseCartQty(product.id)}
                             style={{
+                              background: "transparent",
+                              color: "#fbbf24",
+                              border: "none",
                               fontSize: "18px",
+                              cursor: "pointer",
                               fontWeight: "800",
-                              color: "#0f172a",
                             }}
                           >
-                            ₹{product.price}
-                          </span>
+                            -
+                          </button>
                           <span
                             style={{
-                              fontSize: "12px",
-                              color: "#64748b",
-                              marginLeft: "4px",
+                              color: "#fff",
+                              fontWeight: "800",
+                              fontSize: "14px",
+                              fontFamily: "sans-serif",
                             }}
                           >
-                            / {product.unit}
+                            {qty} IN BASKET
                           </span>
-                        </div>
-
-                        {qty === 0 ? (
                           <button
                             onClick={() => addToCart(product)}
                             style={{
-                              background: "#0056b3",
-                              color: "#fff",
+                              background: "transparent",
+                              color: "#fbbf24",
                               border: "none",
-                              padding: "10px 22px",
-                              borderRadius: "10px",
-                              fontWeight: "700",
+                              fontSize: "18px",
                               cursor: "pointer",
-                              boxShadow: "0 4px 12px rgba(0,86,179,0.2)",
+                              fontWeight: "800",
                             }}
                           >
-                            + Add
+                            +
                           </button>
-                        ) : (
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              background: "#0056b3",
-                              borderRadius: "10px",
-                              overflow: "hidden",
-                            }}
-                          >
-                            <button
-                              onClick={() => decreaseCartQty(product.id)}
-                              style={{
-                                background: "#004085",
-                                color: "#fff",
-                                border: "none",
-                                padding: "10px 14px",
-                                cursor: "pointer",
-                                fontWeight: "800",
-                              }}
-                            >
-                              -
-                            </button>
-                            <span
-                              style={{
-                                color: "#fff",
-                                padding: "0 14px",
-                                fontWeight: "800",
-                                fontSize: "15px",
-                              }}
-                            >
-                              {qty}
-                            </span>
-                            <button
-                              onClick={() => addToCart(product)}
-                              style={{
-                                background: "#004085",
-                                color: "#fff",
-                                border: "none",
-                                padding: "10px 14px",
-                                cursor: "pointer",
-                                fontWeight: "800",
-                              }}
-                            >
-                              +
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -825,51 +961,35 @@ function App() {
         {/* 2. CATALOG VIEW */}
         {currentView === "catalog" && (
           <div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "30px",
-              }}
-            >
-              <div>
-                <h2
-                  style={{
-                    fontSize: "28px",
-                    fontWeight: "800",
-                    margin: "0 0 6px 0",
-                    color: "#0f172a",
-                  }}
-                >
-                  All Products
-                </h2>
-                <p style={{ color: "#64748b", fontSize: "14px", margin: 0 }}>
-                  Fresh dairy & daily grocery items.
-                </p>
-              </div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              <span
                 style={{
-                  padding: "12px 18px",
-                  borderRadius: "10px",
-                  border: "1px solid #cbd5e1",
-                  width: "280px",
-                  outline: "none",
-                  fontSize: "14px",
-                  background: "#fff",
+                  color: "#fbbf24",
+                  fontSize: "12px",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  fontWeight: "800",
+                  fontFamily: "sans-serif",
                 }}
-              />
+              >
+                COMPLETE CATALOGUE
+              </span>
+              <h2
+                style={{
+                  fontSize: "36px",
+                  fontWeight: "400",
+                  margin: "8px 0 0 0",
+                }}
+              >
+                All Fresh Dairy & Farm Items
+              </h2>
             </div>
 
             <div
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "25px",
+                gap: "30px",
               }}
             >
               {filteredProducts.map((product) => {
@@ -878,151 +998,158 @@ function App() {
                   <div
                     key={product.id}
                     style={{
-                      background: "#fff",
-                      borderRadius: "18px",
-                      overflow: "hidden",
-                      boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                      border: "1px solid #e2e8f0",
+                      background: "#090d16",
+                      borderRadius: "10px",
+                      border: "1px solid #1e293b",
+                      padding: "25px",
                       display: "flex",
                       flexDirection: "column",
                     }}
                   >
                     <div
                       style={{
-                        height: "170px",
-                        background: "#f8fafc",
+                        height: "160px",
+                        background: "#0f172a",
+                        borderRadius: "8px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "64px",
+                        marginBottom: "18px",
                       }}
                     >
                       {product.image}
                     </div>
                     <div
                       style={{
-                        padding: "20px",
                         display: "flex",
-                        flexDirection: "column",
-                        flexGrow: 1,
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: "8px",
                       }}
                     >
                       <h4
                         style={{
-                          margin: "0 0 6px 0",
-                          fontSize: "18px",
-                          fontWeight: "700",
-                          color: "#0f172a",
+                          margin: 0,
+                          fontSize: "20px",
+                          fontWeight: "400",
+                          color: "#f8fafc",
                         }}
                       >
                         {product.name}
                       </h4>
-                      <p
+                      <span
                         style={{
-                          color: "#64748b",
-                          fontSize: "13px",
-                          marginBottom: "20px",
-                          flexGrow: 1,
-                          lineHeight: "1.5",
+                          color: "#fbbf24",
+                          fontSize: "17px",
+                          fontWeight: "700",
+                          fontFamily: "sans-serif",
                         }}
                       >
-                        {product.desc}
-                      </p>
+                        ₹{product.price}
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "11px",
+                        color: "#d97706",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                        fontWeight: "700",
+                        marginBottom: "10px",
+                        fontFamily: "sans-serif",
+                      }}
+                    >
+                      {product.category} • {product.unit}
+                    </span>
+                    <p
+                      style={{
+                        color: "#94a3b8",
+                        fontSize: "13px",
+                        marginBottom: "20px",
+                        lineHeight: "1.5",
+                        flexGrow: 1,
+                        fontFamily: "sans-serif",
+                        fontWeight: "300",
+                      }}
+                    >
+                      {product.desc}
+                    </p>
 
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          borderTop: "1px solid #f1f5f9",
-                          paddingTop: "15px",
-                        }}
-                      >
-                        <div>
-                          <span
+                    <div
+                      style={{
+                        borderTop: "1px solid #1e293b",
+                        paddingTop: "16px",
+                      }}
+                    >
+                      {qty === 0 ? (
+                        <button
+                          onClick={() => addToCart(product)}
+                          style={{
+                            background: "#d97706",
+                            color: "#fff",
+                            border: "none",
+                            width: "100%",
+                            padding: "11px",
+                            borderRadius: "4px",
+                            fontWeight: "800",
+                            cursor: "pointer",
+                            letterSpacing: "1px",
+                            fontSize: "12px",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          + ADD TO BASKET
+                        </button>
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            background: "#1e293b",
+                            borderRadius: "4px",
+                            padding: "4px 10px",
+                          }}
+                        >
+                          <button
+                            onClick={() => decreaseCartQty(product.id)}
                             style={{
+                              background: "transparent",
+                              color: "#fbbf24",
+                              border: "none",
                               fontSize: "18px",
+                              cursor: "pointer",
                               fontWeight: "800",
-                              color: "#0f172a",
                             }}
                           >
-                            ₹{product.price}
-                          </span>
+                            -
+                          </button>
                           <span
                             style={{
-                              fontSize: "12px",
-                              color: "#64748b",
-                              marginLeft: "4px",
+                              color: "#fff",
+                              fontWeight: "800",
+                              fontSize: "14px",
+                              fontFamily: "sans-serif",
                             }}
                           >
-                            / {product.unit}
+                            {qty} IN BASKET
                           </span>
-                        </div>
-
-                        {qty === 0 ? (
                           <button
                             onClick={() => addToCart(product)}
                             style={{
-                              background: "#0056b3",
-                              color: "#fff",
+                              background: "transparent",
+                              color: "#fbbf24",
                               border: "none",
-                              padding: "10px 22px",
-                              borderRadius: "10px",
-                              fontWeight: "700",
+                              fontSize: "18px",
                               cursor: "pointer",
+                              fontWeight: "800",
                             }}
                           >
-                            + Add
+                            +
                           </button>
-                        ) : (
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              background: "#0056b3",
-                              borderRadius: "10px",
-                              overflow: "hidden",
-                            }}
-                          >
-                            <button
-                              onClick={() => decreaseCartQty(product.id)}
-                              style={{
-                                background: "#004085",
-                                color: "#fff",
-                                border: "none",
-                                padding: "10px 14px",
-                                cursor: "pointer",
-                                fontWeight: "800",
-                              }}
-                            >
-                              -
-                            </button>
-                            <span
-                              style={{
-                                color: "#fff",
-                                padding: "0 14px",
-                                fontWeight: "800",
-                                fontSize: "15px",
-                              }}
-                            >
-                              {qty}
-                            </span>
-                            <button
-                              onClick={() => addToCart(product)}
-                              style={{
-                                background: "#004085",
-                                color: "#fff",
-                                border: "none",
-                                padding: "10px 14px",
-                                cursor: "pointer",
-                                fontWeight: "800",
-                              }}
-                            >
-                              +
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -1031,59 +1158,1225 @@ function App() {
           </div>
         )}
 
-        {/* 3. CART VIEW WITH FULLY INTERACTIVE PAYMENT OPTIONS */}
+        {/* 3. FLAVIO VISUAL SUBSCRIPTION PLAN CARDS */}
+        {currentView === "subscriptionForm" && (
+          <div>
+            <div style={{ textAlign: "center", marginBottom: "45px" }}>
+              <span
+                style={{
+                  color: "#fbbf24",
+                  fontSize: "12px",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  fontWeight: "800",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                AUTOMATED MORNING DELIVERIES
+              </span>
+              <h2
+                style={{
+                  fontSize: "38px",
+                  fontWeight: "400",
+                  margin: "8px 0 10px 0",
+                }}
+              >
+                Choose Your Daily Milk Subscription Plan
+              </h2>
+              <p
+                style={{
+                  color: "#cbd5e1",
+                  fontSize: "15px",
+                  maxWidth: "600px",
+                  margin: "0 auto",
+                  fontFamily: "sans-serif",
+                  fontWeight: "300",
+                }}
+              >
+                Never run out of pure milk in <b>{location}</b>. Select a plan
+                below and get guaranteed delivery before 7:00 AM.
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: "30px",
+                marginBottom: "45px",
+              }}
+            >
+              <div
+                style={{
+                  background: "#090d16",
+                  border:
+                    selectedPlan === "Daily Regular"
+                      ? "2px solid #fbbf24"
+                      : "1px solid #1e293b",
+                  borderRadius: "12px",
+                  padding: "35px",
+                  textAlign: "center",
+                  position: "relative",
+                }}
+              >
+                <span
+                  style={{
+                    background: "#d97706",
+                    color: "#fff",
+                    fontSize: "10px",
+                    fontWeight: "800",
+                    letterSpacing: "1px",
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    textTransform: "uppercase",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  MOST POPULAR
+                </span>
+                <h3
+                  style={{
+                    fontSize: "26px",
+                    fontWeight: "400",
+                    margin: "20px 0 8px 0",
+                    color: "#f8fafc",
+                  }}
+                >
+                  Daily Regular
+                </h3>
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Fresh milk delivered every single morning 365 days a year.
+                </p>
+
+                <div
+                  style={{
+                    padding: "20px 0",
+                    borderTop: "1px solid #1e293b",
+                    borderBottom: "1px solid #1e293b",
+                    marginBottom: "25px",
+                    textAlign: "left",
+                    fontFamily: "sans-serif",
+                    fontSize: "14px",
+                    color: "#cbd5e1",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <span>✓ Delivered every morning before 7:00 AM</span>
+                  <span>✓ Free doorstep delivery in {location}</span>
+                  <span>✓ Pause or cancel anytime in 1-click</span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setSelectedPlan("Daily Regular");
+                    handleCreateSubscription("Daily Regular");
+                  }}
+                  style={{
+                    background: "#fbbf24",
+                    color: "#0f172a",
+                    border: "none",
+                    width: "100%",
+                    padding: "14px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                    letterSpacing: "1px",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  SELECT DAILY PLAN
+                </button>
+              </div>
+
+              <div
+                style={{
+                  background: "#090d16",
+                  border:
+                    selectedPlan === "Alternate Days"
+                      ? "2px solid #fbbf24"
+                      : "1px solid #1e293b",
+                  borderRadius: "12px",
+                  padding: "35px",
+                  textAlign: "center",
+                }}
+              >
+                <span
+                  style={{
+                    background: "#1e293b",
+                    color: "#94a3b8",
+                    fontSize: "10px",
+                    fontWeight: "800",
+                    letterSpacing: "1px",
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    textTransform: "uppercase",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  FLEXIBLE
+                </span>
+                <h3
+                  style={{
+                    fontSize: "26px",
+                    fontWeight: "400",
+                    margin: "20px 0 8px 0",
+                    color: "#f8fafc",
+                  }}
+                >
+                  Alternate Days
+                </h3>
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Delivered every 2nd day (Mon, Wed, Fri, Sun cycle).
+                </p>
+
+                <div
+                  style={{
+                    padding: "20px 0",
+                    borderTop: "1px solid #1e293b",
+                    borderBottom: "1px solid #1e293b",
+                    marginBottom: "25px",
+                    textAlign: "left",
+                    fontFamily: "sans-serif",
+                    fontSize: "14px",
+                    color: "#cbd5e1",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <span>✓ Delivered alternate mornings</span>
+                  <span>✓ Ideal for small families</span>
+                  <span>✓ Zero hidden delivery charges</span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setSelectedPlan("Alternate Days");
+                    handleCreateSubscription("Alternate Days");
+                  }}
+                  style={{
+                    background: "#1e293b",
+                    color: "#fbbf24",
+                    border: "1px solid #fbbf24",
+                    width: "100%",
+                    padding: "14px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                    letterSpacing: "1px",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  SELECT ALTERNATE PLAN
+                </button>
+              </div>
+
+              <div
+                style={{
+                  background: "#090d16",
+                  border:
+                    selectedPlan === "Weekend Special"
+                      ? "2px solid #fbbf24"
+                      : "1px solid #1e293b",
+                  borderRadius: "12px",
+                  padding: "35px",
+                  textAlign: "center",
+                }}
+              >
+                <span
+                  style={{
+                    background: "#1e293b",
+                    color: "#94a3b8",
+                    fontSize: "10px",
+                    fontWeight: "800",
+                    letterSpacing: "1px",
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    textTransform: "uppercase",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  SPECIAL
+                </span>
+                <h3
+                  style={{
+                    fontSize: "26px",
+                    fontWeight: "400",
+                    margin: "20px 0 8px 0",
+                    color: "#f8fafc",
+                  }}
+                >
+                  Weekend Special
+                </h3>
+                <p
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Extra fresh milk & curd delivered every Saturday & Sunday.
+                </p>
+
+                <div
+                  style={{
+                    padding: "20px 0",
+                    borderTop: "1px solid #1e293b",
+                    borderBottom: "1px solid #1e293b",
+                    marginBottom: "25px",
+                    textAlign: "left",
+                    fontFamily: "sans-serif",
+                    fontSize: "14px",
+                    color: "#cbd5e1",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <span>✓ Saturday & Sunday morning delivery</span>
+                  <span>✓ Includes extra curd packet options</span>
+                  <span>✓ Flexible start dates</span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setSelectedPlan("Weekend Special");
+                    handleCreateSubscription("Weekend Special");
+                  }}
+                  style={{
+                    background: "#1e293b",
+                    color: "#fbbf24",
+                    border: "1px solid #fbbf24",
+                    width: "100%",
+                    padding: "14px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                    letterSpacing: "1px",
+                    fontSize: "13px",
+                    fontFamily: "sans-serif",
+                  }}
+                >
+                  SELECT WEEKEND PLAN
+                </button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "#090d16",
+                padding: "35px",
+                borderRadius: "12px",
+                border: "1px solid #1e293b",
+                maxWidth: "800px",
+                margin: "0 auto",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "400",
+                  marginBottom: "20px",
+                  color: "#fbbf24",
+                  textAlign: "center",
+                }}
+              >
+                Customize Milk Type & Start Date
+              </h3>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "20px",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "8px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    SELECT MILK TYPE
+                  </label>
+                  <select
+                    value={subItem}
+                    onChange={(e) => setSubItem(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "4px",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      color: "#fff",
+                    }}
+                  >
+                    <option value="A2 Desi Cow Milk">
+                      A2 Desi Cow Milk (₹90)
+                    </option>
+                    <option value="Farm Fresh Cow Milk">
+                      Farm Fresh Cow Milk (₹60)
+                    </option>
+                    <option value="Buffalo Rich Fat Milk">
+                      Buffalo Rich Fat Milk (₹70)
+                    </option>
+                    <option value="Full Cream Gold Milk">
+                      Full Cream Gold Milk (₹65)
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "8px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    DAILY QUANTITY
+                  </label>
+                  <select
+                    value={subQty}
+                    onChange={(e) => setSubQty(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "4px",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      color: "#fff",
+                    }}
+                  >
+                    <option value="1 Packet (500ml)">1 Packet (500ml)</option>
+                    <option value="2 Packets (1 Litre)">
+                      2 Packets (1 Litre)
+                    </option>
+                    <option value="3 Packets (1.5 Litre)">
+                      3 Packets (1.5 Litre)
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "12px",
+                      color: "#94a3b8",
+                      marginBottom: "8px",
+                      fontWeight: "700",
+                    }}
+                  >
+                    START DATE
+                  </label>
+                  <input
+                    type="date"
+                    value={subDate}
+                    onChange={(e) => setSubDate(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "11px",
+                      borderRadius: "4px",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      color: "#fff",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 4. ACTIVE SUBSCRIPTIONS VIEW (USER SPECIFIC) */}
+        {currentView === "subscriptions" && (
+          <div>
+            {!currentUser ? (
+              <div
+                style={{
+                  background: "#090d16",
+                  padding: "50px",
+                  borderRadius: "12px",
+                  border: "1px solid #1e293b",
+                  maxWidth: "550px",
+                  margin: "40px auto",
+                  textAlign: "center",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "48px",
+                    display: "block",
+                    marginBottom: "15px",
+                  }}
+                >
+                  🔒
+                </span>
+                <h3
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: "24px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Sign In Required
+                </h3>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "14px",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Please Sign In to view your active milk subscription
+                  schedules.
+                </p>
+                <button
+                  onClick={() => {
+                    setIsSigningUp(false);
+                    setCurrentView("login");
+                  }}
+                  style={{
+                    background: "#d97706",
+                    color: "#fff",
+                    border: "none",
+                    padding: "12px 30px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                  }}
+                >
+                  SIGN IN NOW
+                </button>
+              </div>
+            ) : userSubscriptions.length === 0 ? (
+              <div
+                style={{
+                  background: "#090d16",
+                  padding: "50px",
+                  borderRadius: "12px",
+                  border: "1px solid #1e293b",
+                  maxWidth: "550px",
+                  margin: "40px auto",
+                  textAlign: "center",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "48px",
+                    display: "block",
+                    marginBottom: "15px",
+                  }}
+                >
+                  🥛
+                </span>
+                <h3
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: "24px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  No Active Subscriptions
+                </h3>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "14px",
+                    marginBottom: "25px",
+                  }}
+                >
+                  You have not scheduled any daily milk deliveries yet.
+                </p>
+                <button
+                  onClick={() => setCurrentView("subscriptionForm")}
+                  style={{
+                    background: "#d97706",
+                    color: "#fff",
+                    border: "none",
+                    padding: "12px 30px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                  }}
+                >
+                  SCHEDULE MILK NOW
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ textAlign: "center", marginBottom: "45px" }}>
+                  <span
+                    style={{
+                      color: "#fbbf24",
+                      fontSize: "12px",
+                      letterSpacing: "3px",
+                      textTransform: "uppercase",
+                      fontWeight: "800",
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    YOUR ACTIVE SCHEDULE
+                  </span>
+                  <h2
+                    style={{
+                      fontSize: "36px",
+                      fontWeight: "400",
+                      margin: "8px 0 0 0",
+                    }}
+                  >
+                    Scheduled Milk Subscriptions for {currentUser.name}
+                  </h2>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                    gap: "25px",
+                  }}
+                >
+                  {userSubscriptions.map((sub) => (
+                    <div
+                      key={sub.id}
+                      style={{
+                        background: "#090d16",
+                        padding: "30px",
+                        borderRadius: "10px",
+                        border: "1px solid #1e293b",
+                        borderLeft: `5px solid ${sub.status === "Active" ? "#10b981" : "#ef4444"}`,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "15px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: "#fbbf24",
+                            fontWeight: "700",
+                            fontSize: "14px",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          {sub.id}
+                        </span>
+                        <span
+                          style={{
+                            background:
+                              sub.status === "Active" ? "#064e3b" : "#7f1d1d",
+                            color:
+                              sub.status === "Active" ? "#6ee7b7" : "#fca5a5",
+                            padding: "4px 12px",
+                            borderRadius: "20px",
+                            fontSize: "11px",
+                            fontWeight: "800",
+                            textTransform: "uppercase",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          {sub.status}
+                        </span>
+                      </div>
+                      <h3
+                        style={{
+                          fontSize: "24px",
+                          fontWeight: "400",
+                          margin: "0 0 15px 0",
+                          color: "#f8fafc",
+                        }}
+                      >
+                        {sub.item}
+                      </h3>
+
+                      <div
+                        style={{
+                          fontFamily: "sans-serif",
+                          fontSize: "14px",
+                          color: "#cbd5e1",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "8px",
+                          marginBottom: "25px",
+                        }}
+                      >
+                        <span>
+                          📦 Quantity: <b>{sub.qty}</b>
+                        </span>
+                        <span>
+                          🔄 Schedule: <b>{sub.frequency}</b>
+                        </span>
+                        <span>
+                          📅 Starts On: <b>{sub.startDate}</b>
+                        </span>
+                        <span>
+                          💵 Price: <b>{sub.price}</b>
+                        </span>
+                      </div>
+
+                      {sub.status === "Active" && (
+                        <button
+                          onClick={() => cancelSubscription(sub.id)}
+                          style={{
+                            background: "#7f1d1d",
+                            color: "#fca5a5",
+                            border: "none",
+                            width: "100%",
+                            padding: "12px",
+                            borderRadius: "4px",
+                            fontWeight: "800",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                            letterSpacing: "1px",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          CANCEL SUBSCRIPTION
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 5. ORDERS & TRACKING VIEW (USER SPECIFIC) */}
+        {currentView === "orders" && (
+          <div>
+            {!currentUser ? (
+              <div
+                style={{
+                  background: "#090d16",
+                  padding: "50px",
+                  borderRadius: "12px",
+                  border: "1px solid #1e293b",
+                  maxWidth: "550px",
+                  margin: "40px auto",
+                  textAlign: "center",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "48px",
+                    display: "block",
+                    marginBottom: "15px",
+                  }}
+                >
+                  🔒
+                </span>
+                <h3
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: "24px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Sign In Required
+                </h3>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "14px",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Please Sign In to track your recent fresh orders.
+                </p>
+                <button
+                  onClick={() => {
+                    setIsSigningUp(false);
+                    setCurrentView("login");
+                  }}
+                  style={{
+                    background: "#d97706",
+                    color: "#fff",
+                    border: "none",
+                    padding: "12px 30px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                  }}
+                >
+                  SIGN IN NOW
+                </button>
+              </div>
+            ) : userOrders.length === 0 ? (
+              <div
+                style={{
+                  background: "#090d16",
+                  padding: "50px",
+                  borderRadius: "12px",
+                  border: "1px solid #1e293b",
+                  maxWidth: "550px",
+                  margin: "40px auto",
+                  textAlign: "center",
+                  fontFamily: "sans-serif",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "48px",
+                    display: "block",
+                    marginBottom: "15px",
+                  }}
+                >
+                  📦
+                </span>
+                <h3
+                  style={{
+                    color: "#fbbf24",
+                    fontSize: "24px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  No Orders Placed Yet
+                </h3>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "14px",
+                    marginBottom: "25px",
+                  }}
+                >
+                  Hi <b>{currentUser.name}</b>, you haven't placed any orders
+                  yet.
+                </p>
+                <button
+                  onClick={() => setCurrentView("catalog")}
+                  style={{
+                    background: "#d97706",
+                    color: "#fff",
+                    border: "none",
+                    padding: "12px 30px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                  }}
+                >
+                  BROWSE PRODUCTS
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div style={{ textAlign: "center", marginBottom: "45px" }}>
+                  <span
+                    style={{
+                      color: "#fbbf24",
+                      fontSize: "12px",
+                      letterSpacing: "3px",
+                      textTransform: "uppercase",
+                      fontWeight: "800",
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    REAL-TIME DELIVERY TRACKING
+                  </span>
+                  <h2
+                    style={{
+                      fontSize: "36px",
+                      fontWeight: "400",
+                      margin: "8px 0 0 0",
+                    }}
+                  >
+                    Recent Orders for {currentUser.name}
+                  </h2>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "30px",
+                    maxWidth: "900px",
+                    margin: "0 auto",
+                  }}
+                >
+                  {userOrders.map((order) => (
+                    <div
+                      key={order.id}
+                      style={{
+                        background: "#090d16",
+                        padding: "35px",
+                        borderRadius: "12px",
+                        border: "1px solid #1e293b",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          borderBottom: "1px solid #1e293b",
+                          paddingBottom: "20px",
+                          marginBottom: "25px",
+                        }}
+                      >
+                        <div>
+                          <span
+                            style={{
+                              color: "#fbbf24",
+                              fontWeight: "800",
+                              fontSize: "18px",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
+                            {order.id}
+                          </span>
+                          <p
+                            style={{
+                              color: "#94a3b8",
+                              fontSize: "13px",
+                              margin: "4px 0 0 0",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
+                            Placed on {order.date} • Paid via{" "}
+                            <b>{order.payment || "COD"}</b>
+                          </p>
+                          <p
+                            style={{
+                              color: "#f8fafc",
+                              fontSize: "15px",
+                              margin: "12px 0 0 0",
+                              fontFamily: "sans-serif",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Items: {order.items}
+                          </p>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <span
+                            style={{
+                              fontSize: "26px",
+                              fontWeight: "700",
+                              color: "#fbbf24",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
+                            ₹{order.total}
+                          </span>
+                          <p
+                            style={{
+                              margin: "6px 0 0 0",
+                              color:
+                                order.status === "Cancelled"
+                                  ? "#ef4444"
+                                  : "#10b981",
+                              fontWeight: "800",
+                              fontSize: "13px",
+                              textTransform: "uppercase",
+                              fontFamily: "sans-serif",
+                              letterSpacing: "1px",
+                            }}
+                          >
+                            {order.status}
+                          </p>
+                        </div>
+                      </div>
+
+                      {order.status !== "Cancelled" ? (
+                        <div>
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                              gap: "10px",
+                              textAlign: "center",
+                              margin: "30px 0",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
+                            <div>
+                              <div
+                                style={{
+                                  width: "36px",
+                                  height: "36px",
+                                  borderRadius: "50%",
+                                  background: "#10b981",
+                                  color: "#fff",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "0 auto 10px auto",
+                                  fontWeight: "800",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                ✓
+                              </div>
+                              <span
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "700",
+                                  color: "#f8fafc",
+                                  display: "block",
+                                }}
+                              >
+                                Order Placed
+                              </span>
+                              <span
+                                style={{ fontSize: "10px", color: "#94a3b8" }}
+                              >
+                                Verified
+                              </span>
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  width: "36px",
+                                  height: "36px",
+                                  borderRadius: "50%",
+                                  background: "#10b981",
+                                  color: "#fff",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "0 auto 10px auto",
+                                  fontWeight: "800",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                ✓
+                              </div>
+                              <span
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "700",
+                                  color: "#f8fafc",
+                                  display: "block",
+                                }}
+                              >
+                                Confirmed
+                              </span>
+                              <span
+                                style={{ fontSize: "10px", color: "#94a3b8" }}
+                              >
+                                Packed Fresh
+                              </span>
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  width: "36px",
+                                  height: "36px",
+                                  borderRadius: "50%",
+                                  background: "#d97706",
+                                  color: "#fff",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "0 auto 10px auto",
+                                  fontWeight: "800",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                🚚
+                              </div>
+                              <span
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "700",
+                                  color: "#fbbf24",
+                                  display: "block",
+                                }}
+                              >
+                                On the Way
+                              </span>
+                              <span
+                                style={{ fontSize: "10px", color: "#94a3b8" }}
+                              >
+                                Executive Assigned
+                              </span>
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  width: "36px",
+                                  height: "36px",
+                                  borderRadius: "50%",
+                                  background: "#1e293b",
+                                  color: "#64748b",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "0 auto 10px auto",
+                                  fontWeight: "800",
+                                  fontSize: "14px",
+                                }}
+                              >
+                                🏠
+                              </div>
+                              <span
+                                style={{
+                                  fontSize: "12px",
+                                  fontWeight: "600",
+                                  color: "#64748b",
+                                  display: "block",
+                                }}
+                              >
+                                Delivered
+                              </span>
+                              <span
+                                style={{ fontSize: "10px", color: "#64748b" }}
+                              >
+                                Before 7 AM
+                              </span>
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              borderTop: "1px solid #1e293b",
+                              paddingTop: "20px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
+                            <span
+                              style={{ fontSize: "13px", color: "#cbd5e1" }}
+                            >
+                              📍 Address: <b>{order.address}</b>
+                            </span>
+                            <button
+                              onClick={() => cancelOrder(order.id)}
+                              style={{
+                                background: "#7f1d1d",
+                                color: "#fca5a5",
+                                border: "none",
+                                padding: "10px 20px",
+                                borderRadius: "4px",
+                                fontWeight: "800",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                                letterSpacing: "1px",
+                              }}
+                            >
+                              CANCEL ORDER
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            background: "#450a0a",
+                            border: "1px solid #7f1d1d",
+                            padding: "15px",
+                            borderRadius: "6px",
+                            textAlign: "center",
+                            color: "#fca5a5",
+                            fontWeight: "700",
+                            fontSize: "13px",
+                            fontFamily: "sans-serif",
+                          }}
+                        >
+                          ❌ Order cancelled. Refund processed.
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 6. CART VIEW */}
         {currentView === "cart" && (
           <div
             style={{
-              background: "#fff",
-              padding: "40px",
-              borderRadius: "20px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
-              border: "1px solid #e2e8f0",
-              maxWidth: "800px",
+              background: "#090d16",
+              padding: "45px",
+              borderRadius: "12px",
+              border: "1px solid #1e293b",
+              maxWidth: "850px",
               margin: "0 auto",
             }}
           >
             <h2
               style={{
-                fontSize: "28px",
-                fontWeight: "800",
-                marginBottom: "25px",
-                color: "#0f172a",
+                fontSize: "32px",
+                fontWeight: "400",
+                marginBottom: "30px",
+                color: "#fbbf24",
+                textAlign: "center",
               }}
             >
-              Your Shopping Cart
+              Your Fresh Basket
             </h2>
 
             {cart.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px 0" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "40px 0",
+                  fontFamily: "sans-serif",
+                }}
+              >
                 <p
                   style={{
-                    color: "#64748b",
+                    color: "#94a3b8",
                     fontSize: "16px",
-                    marginBottom: "20px",
+                    marginBottom: "25px",
                   }}
                 >
-                  Your cart is empty.
+                  Your shopping basket is currently empty.
                 </p>
                 <button
                   onClick={() => setCurrentView("catalog")}
                   style={{
-                    background: "#0056b3",
+                    background: "#d97706",
                     color: "#fff",
                     border: "none",
-                    padding: "12px 24px",
-                    borderRadius: "10px",
-                    fontWeight: "700",
+                    padding: "12px 30px",
+                    borderRadius: "4px",
+                    fontWeight: "800",
                     cursor: "pointer",
                   }}
                 >
-                  Browse Products
+                  BROWSE DAIRY CATALOGUE
                 </button>
               </div>
             ) : (
               <div>
-                <div style={{ marginBottom: "25px" }}>
+                <div style={{ marginBottom: "30px" }}>
                   {cart.map((item) => (
                     <div
                       key={item.id}
@@ -1091,32 +2384,40 @@ function App() {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        padding: "16px 0",
-                        borderBottom: "1px solid #f1f5f9",
+                        padding: "18px 0",
+                        borderBottom: "1px solid #1e293b",
                       }}
                     >
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "18px",
+                          gap: "20px",
                         }}
                       >
-                        <span style={{ fontSize: "36px" }}>{item.image}</span>
+                        <span style={{ fontSize: "40px" }}>{item.image}</span>
                         <div>
                           <h4
                             style={{
                               margin: "0 0 4px 0",
-                              fontWeight: "700",
-                              fontSize: "16px",
-                              color: "#0f172a",
+                              fontWeight: "400",
+                              fontSize: "20px",
+                              color: "#f8fafc",
                             }}
                           >
                             {item.name}
                           </h4>
-                          <span style={{ color: "#64748b", fontSize: "14px" }}>
+                          <span
+                            style={{
+                              color: "#94a3b8",
+                              fontSize: "14px",
+                              fontFamily: "sans-serif",
+                            }}
+                          >
                             ₹{item.price} x {item.qty} ={" "}
-                            <b>₹{item.price * item.qty}</b>
+                            <b style={{ color: "#fbbf24" }}>
+                              ₹{item.price * item.qty}
+                            </b>
                           </span>
                         </div>
                       </div>
@@ -1125,25 +2426,25 @@ function App() {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: "15px",
+                          gap: "20px",
                         }}
                       >
                         <div
                           style={{
                             display: "flex",
                             alignItems: "center",
-                            background: "#f1f5f9",
-                            borderRadius: "8px",
-                            overflow: "hidden",
-                            border: "1px solid #cbd5e1",
+                            background: "#1e293b",
+                            borderRadius: "4px",
+                            border: "1px solid #334155",
                           }}
                         >
                           <button
                             onClick={() => decreaseCartQty(item.id)}
                             style={{
                               background: "transparent",
+                              color: "#fbbf24",
                               border: "none",
-                              padding: "6px 12px",
+                              padding: "6px 14px",
                               cursor: "pointer",
                               fontWeight: "800",
                             }}
@@ -1151,7 +2452,12 @@ function App() {
                             -
                           </button>
                           <span
-                            style={{ padding: "0 10px", fontWeight: "700" }}
+                            style={{
+                              padding: "0 10px",
+                              fontWeight: "700",
+                              color: "#fff",
+                              fontFamily: "sans-serif",
+                            }}
                           >
                             {item.qty}
                           </span>
@@ -1159,8 +2465,9 @@ function App() {
                             onClick={() => addToCart(item)}
                             style={{
                               background: "transparent",
+                              color: "#fbbf24",
                               border: "none",
-                              padding: "6px 12px",
+                              padding: "6px 14px",
                               cursor: "pointer",
                               fontWeight: "800",
                             }}
@@ -1173,14 +2480,15 @@ function App() {
                             setCart(cart.filter((i) => i.id !== item.id))
                           }
                           style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
+                            background: "#7f1d1d",
+                            color: "#fca5a5",
                             border: "none",
                             padding: "8px 14px",
-                            borderRadius: "8px",
+                            borderRadius: "4px",
                             fontWeight: "700",
                             cursor: "pointer",
-                            fontSize: "13px",
+                            fontSize: "12px",
+                            fontFamily: "sans-serif",
                           }}
                         >
                           Remove
@@ -1194,103 +2502,92 @@ function App() {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    fontSize: "20px",
-                    fontWeight: "800",
-                    marginBottom: "30px",
-                    background: "#f8fafc",
+                    fontSize: "22px",
+                    fontWeight: "700",
+                    marginBottom: "35px",
+                    background: "#0f172a",
                     padding: "20px",
-                    borderRadius: "12px",
-                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    border: "1px solid #1e293b",
+                    fontFamily: "sans-serif",
                   }}
                 >
-                  <span>Total Amount:</span>
-                  <span style={{ color: "#0056b3" }}>₹{calculateTotal()}</span>
+                  <span>Grand Total:</span>
+                  <span style={{ color: "#fbbf24" }}>₹{calculateTotal()}</span>
                 </div>
 
-                <form onSubmit={handleCheckout}>
+                <form
+                  onSubmit={handleCheckout}
+                  style={{ fontFamily: "sans-serif" }}
+                >
                   <h3
                     style={{
                       fontSize: "18px",
                       fontWeight: "700",
                       marginBottom: "15px",
-                      color: "#0f172a",
+                      color: "#fbbf24",
                     }}
                   >
-                    Delivery Address
+                    Delivery Address ({location})
                   </h3>
-                  <div style={{ marginBottom: "25px" }}>
+                  <div style={{ marginBottom: "30px" }}>
                     <input
                       type="text"
-                      placeholder="Enter street address, door no, area..."
+                      placeholder="Street address, door number, area in Tamil Nadu..."
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       style={{
                         width: "100%",
-                        padding: "12px 15px",
-                        borderRadius: "10px",
-                        border: "1px solid #cbd5e1",
+                        padding: "14px",
+                        borderRadius: "4px",
+                        background: "#0f172a",
+                        border: "1px solid #334155",
                         outline: "none",
+                        color: "#fff",
                         fontSize: "14px",
                       }}
                       required
                     />
                   </div>
 
-                  {/* INTERACTIVE PAYMENT OPTIONS */}
                   <h3
                     style={{
                       fontSize: "18px",
                       fontWeight: "700",
                       marginBottom: "15px",
-                      color: "#0f172a",
+                      color: "#fbbf24",
                     }}
                   >
-                    Select Payment Method
+                    Payment Mode
                   </h3>
                   <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
                       gap: "15px",
-                      marginBottom: "30px",
+                      marginBottom: "35px",
                     }}
                   >
                     {[
-                      {
-                        id: "COD",
-                        label: "💵 Cash on Delivery",
-                        desc: "Pay cash when order arrives",
-                      },
-                      {
-                        id: "UPI",
-                        label: "📱 UPI (GPay / PhonePe)",
-                        desc: "Instant UPI payment",
-                      },
-                      {
-                        id: "Card",
-                        label: "💳 Credit / Debit Card",
-                        desc: "Visa, Mastercard, RuPay",
-                      },
-                      {
-                        id: "NetBanking",
-                        label: "🏦 Net Banking",
-                        desc: "All major Indian banks",
-                      },
+                      { id: "COD", label: "💵 Cash on Delivery" },
+                      { id: "UPI", label: "📱 UPI (GPay / PhonePe)" },
+                      { id: "Card", label: "💳 Credit / Debit Card" },
+                      { id: "NetBanking", label: "🏦 Net Banking" },
                     ].map((pay) => (
                       <label
                         key={pay.id}
                         style={{
                           padding: "16px",
-                          borderRadius: "12px",
+                          borderRadius: "6px",
                           border:
                             paymentMethod === pay.id
-                              ? "2px solid #0056b3"
-                              : "1px solid #cbd5e1",
+                              ? "2px solid #fbbf24"
+                              : "1px solid #1e293b",
                           background:
-                            paymentMethod === pay.id ? "#f0f7ff" : "#fff",
+                            paymentMethod === pay.id ? "#1e293b" : "#0f172a",
                           cursor: "pointer",
                           display: "flex",
-                          alignItems: "flex-start",
+                          alignItems: "center",
                           gap: "12px",
                         }}
                       >
@@ -1300,23 +2597,16 @@ function App() {
                           value={pay.id}
                           checked={paymentMethod === pay.id}
                           onChange={() => setPaymentMethod(pay.id)}
-                          style={{ marginTop: "4px", cursor: "pointer" }}
                         />
-                        <div>
-                          <span
-                            style={{
-                              fontWeight: "700",
-                              fontSize: "15px",
-                              display: "block",
-                              color: "#0f172a",
-                            }}
-                          >
-                            {pay.label}
-                          </span>
-                          <span style={{ fontSize: "12px", color: "#64748b" }}>
-                            {pay.desc}
-                          </span>
-                        </div>
+                        <span
+                          style={{
+                            fontWeight: "700",
+                            fontSize: "14px",
+                            color: "#f8fafc",
+                          }}
+                        >
+                          {pay.label}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -1324,18 +2614,19 @@ function App() {
                   <button
                     type="submit"
                     style={{
-                      background: "#0056b3",
+                      background: "#d97706",
                       color: "#fff",
                       border: "none",
                       width: "100%",
                       padding: "16px",
-                      borderRadius: "12px",
+                      borderRadius: "4px",
                       fontWeight: "800",
-                      fontSize: "16px",
+                      fontSize: "15px",
                       cursor: "pointer",
+                      letterSpacing: "1px",
                     }}
                   >
-                    Place Order (₹{calculateTotal()}) • Mode: {paymentMethod}
+                    CONFIRM & PLACE ORDER (₹{calculateTotal()})
                   </button>
                 </form>
               </div>
@@ -1343,617 +2634,54 @@ function App() {
           </div>
         )}
 
-        {/* 4. SUBSCRIPTION FORM */}
-        {currentView === "subscriptionForm" && (
-          <div
-            style={{
-              background: "#fff",
-              padding: "40px",
-              borderRadius: "20px",
-              maxWidth: "650px",
-              margin: "0 auto",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.04)",
-              border: "1px solid #e2e8f0",
-            }}
-          >
-            <div style={{ textAlign: "center", marginBottom: "30px" }}>
-              <span style={{ fontSize: "42px" }}>🥛</span>
-              <h2
-                style={{
-                  fontSize: "26px",
-                  fontWeight: "800",
-                  color: "#0f172a",
-                  margin: "10px 0 6px 0",
-                }}
-              >
-                Schedule Milk Subscription
-              </h2>
-              <p style={{ color: "#64748b", fontSize: "14px" }}>
-                Automated fresh daily deliveries at your door.
-              </p>
-            </div>
-
-            <form onSubmit={handleCreateSubscription}>
-              <div style={{ marginBottom: "20px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontWeight: "600",
-                    fontSize: "14px",
-                  }}
-                >
-                  Milk Product
-                </label>
-                <select
-                  value={subItem}
-                  onChange={(e) => setSubItem(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 15px",
-                    borderRadius: "10px",
-                    border: "1px solid #cbd5e1",
-                    fontSize: "14px",
-                    background: "#fff",
-                  }}
-                >
-                  <option value="Farm Fresh Cow Milk">
-                    Farm Fresh Cow Milk (₹60 / 500ml)
-                  </option>
-                  <option value="Buffalo Rich Milk">
-                    Buffalo Rich Milk (₹70 / 500ml)
-                  </option>
-                  <option value="A2 Desi Cow Milk">
-                    A2 Desi Cow Milk (₹90 / 500ml)
-                  </option>
-                </select>
-              </div>
-
-              <div style={{ marginBottom: "20px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontWeight: "600",
-                    fontSize: "14px",
-                  }}
-                >
-                  Quantity
-                </label>
-                <select
-                  value={subQty}
-                  onChange={(e) => setSubQty(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 15px",
-                    borderRadius: "10px",
-                    border: "1px solid #cbd5e1",
-                    fontSize: "14px",
-                    background: "#fff",
-                  }}
-                >
-                  <option value="1 Packet (500ml)">1 Packet (500ml)</option>
-                  <option value="2 Packets (1 Litre)">
-                    2 Packets (1 Litre)
-                  </option>
-                </select>
-              </div>
-
-              <div style={{ marginBottom: "20px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontWeight: "600",
-                    fontSize: "14px",
-                  }}
-                >
-                  Frequency
-                </label>
-                <select
-                  value={subFreq}
-                  onChange={(e) => setSubFreq(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 15px",
-                    borderRadius: "10px",
-                    border: "1px solid #cbd5e1",
-                    fontSize: "14px",
-                    background: "#fff",
-                  }}
-                >
-                  <option value="Daily Morning">
-                    Daily Morning (Everyday before 7 AM)
-                  </option>
-                  <option value="Alternate Days">Alternate Days</option>
-                </select>
-              </div>
-
-              <div style={{ marginBottom: "30px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    fontWeight: "600",
-                    fontSize: "14px",
-                  }}
-                >
-                  Start Date
-                </label>
-                <input
-                  type="date"
-                  value={subDate}
-                  onChange={(e) => setSubDate(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 15px",
-                    borderRadius: "10px",
-                    border: "1px solid #cbd5e1",
-                    fontSize: "14px",
-                  }}
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                style={{
-                  background: "#0056b3",
-                  color: "#fff",
-                  border: "none",
-                  width: "100%",
-                  padding: "16px",
-                  borderRadius: "12px",
-                  fontWeight: "800",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
-              >
-                Confirm Subscription
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* 5. ACTIVE SUBSCRIPTIONS */}
-        {currentView === "subscriptions" && (
-          <div>
-            <h2
-              style={{
-                fontSize: "28px",
-                fontWeight: "800",
-                marginBottom: "25px",
-                color: "#0f172a",
-              }}
-            >
-              Active Subscriptions
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "20px",
-              }}
-            >
-              {subscriptions.map((sub) => (
-                <div
-                  key={sub.id}
-                  style={{
-                    background: "#fff",
-                    padding: "24px",
-                    borderRadius: "16px",
-                    borderLeft: `6px solid ${sub.status === "Active" ? "#10b981" : "#94a3b8"}`,
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                    borderTop: "1px solid #e2e8f0",
-                    borderRight: "1px solid #e2e8f0",
-                    borderBottom: "1px solid #e2e8f0",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontWeight: "800",
-                        color: "#0056b3",
-                        fontSize: "15px",
-                      }}
-                    >
-                      {sub.id}
-                    </span>
-                    <span
-                      style={{
-                        background:
-                          sub.status === "Active" ? "#d1fae5" : "#f1f5f9",
-                        color: sub.status === "Active" ? "#065f46" : "#64748b",
-                        padding: "4px 10px",
-                        borderRadius: "8px",
-                        fontSize: "12px",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {sub.status}
-                    </span>
-                  </div>
-                  <h3
-                    style={{
-                      margin: "0 0 10px 0",
-                      fontSize: "18px",
-                      fontWeight: "700",
-                      color: "#0f172a",
-                    }}
-                  >
-                    {sub.item}
-                  </h3>
-                  <p
-                    style={{
-                      margin: "6px 0",
-                      color: "#475569",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Quantity: <b>{sub.qty}</b>
-                  </p>
-                  <p
-                    style={{
-                      margin: "6px 0",
-                      color: "#475569",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Frequency: <b>{sub.frequency}</b>
-                  </p>
-                  <p
-                    style={{
-                      margin: "6px 0 20px 0",
-                      color: "#475569",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Start Date: <b>{sub.startDate}</b>
-                  </p>
-
-                  {sub.status === "Active" && (
-                    <button
-                      onClick={() => cancelSubscription(sub.id)}
-                      style={{
-                        background: "#fee2e2",
-                        color: "#991b1b",
-                        border: "none",
-                        width: "100%",
-                        padding: "10px",
-                        borderRadius: "8px",
-                        fontWeight: "700",
-                        cursor: "pointer",
-                        fontSize: "13px",
-                      }}
-                    >
-                      Cancel Subscription
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 6. ORDERS VIEW */}
-        {currentView === "orders" && (
-          <div>
-            <h2
-              style={{
-                fontSize: "28px",
-                fontWeight: "800",
-                marginBottom: "25px",
-                color: "#0f172a",
-              }}
-            >
-              My Orders & Tracking
-            </h2>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-            >
-              {orders.map((order) => (
-                <div
-                  key={order.id}
-                  style={{
-                    background: "#fff",
-                    padding: "24px",
-                    borderRadius: "18px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <div>
-                      <span
-                        style={{
-                          fontWeight: "800",
-                          fontSize: "16px",
-                          color: "#0056b3",
-                        }}
-                      >
-                        {order.id}
-                      </span>
-                      <p
-                        style={{
-                          margin: "4px 0 0 0",
-                          color: "#64748b",
-                          fontSize: "13px",
-                        }}
-                      >
-                        Placed on {order.date} • Payment:{" "}
-                        <b>{order.payment || "COD"}</b>
-                      </p>
-                      <p
-                        style={{
-                          margin: "8px 0 0 0",
-                          color: "#1e293b",
-                          fontSize: "14px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        Items: {order.items}
-                      </p>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <span
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "800",
-                          color: "#0f172a",
-                        }}
-                      >
-                        ₹{order.total}
-                      </span>
-                      <p
-                        style={{
-                          margin: "6px 0 0 0",
-                          color:
-                            order.status === "Cancelled"
-                              ? "#c62828"
-                              : "#10b981",
-                          fontWeight: "700",
-                          fontSize: "14px",
-                        }}
-                      >
-                        Status: {order.status}
-                      </p>
-                    </div>
-                  </div>
-
-                  {order.status !== "Cancelled" ? (
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          position: "relative",
-                          marginTop: "20px",
-                          marginBottom: "20px",
-                          padding: "0 20px",
-                        }}
-                      >
-                        <div style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              background: "#10b981",
-                              color: "#fff",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              margin: "0 auto 6px auto",
-                              fontSize: "12px",
-                              fontWeight: "800",
-                            }}
-                          >
-                            ✓
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: "700",
-                              color: "#0f172a",
-                            }}
-                          >
-                            Placed
-                          </span>
-                        </div>
-                        <div style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              background: "#10b981",
-                              color: "#fff",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              margin: "0 auto 6px auto",
-                              fontSize: "12px",
-                              fontWeight: "800",
-                            }}
-                          >
-                            ✓
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: "700",
-                              color: "#0f172a",
-                            }}
-                          >
-                            Confirmed
-                          </span>
-                        </div>
-                        <div style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              background: "#0056b3",
-                              color: "#fff",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              margin: "0 auto 6px auto",
-                              fontSize: "12px",
-                              fontWeight: "800",
-                            }}
-                          >
-                            🚚
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: "700",
-                              color: "#0056b3",
-                            }}
-                          >
-                            Out for Delivery
-                          </span>
-                        </div>
-                        <div style={{ textAlign: "center" }}>
-                          <div
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              borderRadius: "50%",
-                              background: "#e2e8f0",
-                              color: "#94a3b8",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              margin: "0 auto 6px auto",
-                              fontSize: "12px",
-                              fontWeight: "800",
-                            }}
-                          >
-                            🏠
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              color: "#94a3b8",
-                              fontWeight: "600",
-                            }}
-                          >
-                            Delivered
-                          </span>
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          borderTop: "1px solid #f1f5f9",
-                          paddingTop: "15px",
-                          textAlign: "right",
-                        }}
-                      >
-                        <button
-                          onClick={() => cancelOrder(order.id)}
-                          style={{
-                            background: "#fee2e2",
-                            color: "#991b1b",
-                            border: "none",
-                            padding: "10px 20px",
-                            borderRadius: "8px",
-                            fontWeight: "700",
-                            cursor: "pointer",
-                            fontSize: "13px",
-                          }}
-                        >
-                          Cancel Order
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        background: "#fef2f2",
-                        border: "1px solid #fecaca",
-                        padding: "12px",
-                        borderRadius: "10px",
-                        textAlign: "center",
-                        color: "#991b1b",
-                        fontWeight: "600",
-                        fontSize: "13px",
-                        marginTop: "15px",
-                      }}
-                    >
-                      ❌ This order has been cancelled.
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* 7. AUTHENTICATION */}
         {currentView === "login" && (
           <div
             style={{
-              background: "#fff",
+              background: "#090d16",
               padding: "40px",
-              borderRadius: "20px",
-              maxWidth: "440px",
+              borderRadius: "12px",
+              maxWidth: "450px",
               margin: "30px auto",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-              border: "1px solid #e2e8f0",
+              border: "1px solid #1e293b",
+              fontFamily: "sans-serif",
             }}
           >
             <h2
               style={{
-                fontSize: "26px",
-                fontWeight: "800",
+                fontSize: "28px",
+                fontWeight: "400",
                 marginBottom: "8px",
-                color: "#0056b3",
+                color: "#fbbf24",
                 textAlign: "center",
+                fontFamily: "serif",
               }}
             >
-              {isSigningUp ? "Create Customer Account" : "Customer Login"}
+              {isSigningUp ? "Create Account" : "Customer Sign In"}
             </h2>
             <p
               style={{
-                color: "#64748b",
+                color: "#94a3b8",
                 textAlign: "center",
-                marginBottom: "25px",
-                fontSize: "14px",
+                marginBottom: "30px",
+                fontSize: "13px",
               }}
             >
               {isSigningUp
-                ? "Sign up to order dairy & schedule milk subscriptions."
-                : "Please enter your email and password to log in."}
+                ? "Sign up for automated fresh milk deliveries."
+                : "Access your fresh orders & subscriptions."}
             </p>
 
             {authError && (
               <div
                 style={{
-                  backgroundColor: "#fee2e2",
-                  color: "#991b1b",
+                  backgroundColor: "#7f1d1d",
+                  color: "#fca5a5",
                   padding: "12px",
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   marginBottom: "20px",
                   fontSize: "13px",
-                  fontWeight: "600",
-                  border: "1px solid #f87171",
+                  border: "1px solid #ef4444",
                 }}
               >
                 ⚠️ {authError}
@@ -1962,27 +2690,29 @@ function App() {
 
             <form onSubmit={handleAuthSubmit}>
               {isSigningUp && (
-                <div style={{ marginBottom: "16px" }}>
+                <div style={{ marginBottom: "18px" }}>
                   <label
                     style={{
                       display: "block",
                       marginBottom: "6px",
-                      fontWeight: "600",
-                      fontSize: "14px",
+                      fontSize: "13px",
+                      color: "#cbd5e1",
                     }}
                   >
                     Full Name
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="Your full name"
                     value={authName}
                     onChange={(e) => setAuthName(e.target.value)}
                     style={{
                       width: "100%",
                       padding: "12px",
-                      borderRadius: "8px",
-                      border: "1px solid #cbd5e1",
+                      borderRadius: "4px",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      color: "#fff",
                       outline: "none",
                     }}
                     required
@@ -1990,54 +2720,58 @@ function App() {
                 </div>
               )}
 
-              <div style={{ marginBottom: "16px" }}>
+              <div style={{ marginBottom: "18px" }}>
                 <label
                   style={{
                     display: "block",
                     marginBottom: "6px",
-                    fontWeight: "600",
-                    fontSize: "14px",
+                    fontSize: "13px",
+                    color: "#cbd5e1",
                   }}
                 >
                   Email Address
                 </label>
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="name@example.com"
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
                   style={{
                     width: "100%",
                     padding: "12px",
-                    borderRadius: "8px",
-                    border: "1px solid #cbd5e1",
+                    borderRadius: "4px",
+                    background: "#0f172a",
+                    border: "1px solid #334155",
+                    color: "#fff",
                     outline: "none",
                   }}
                   required
                 />
               </div>
 
-              <div style={{ marginBottom: "24px" }}>
+              <div style={{ marginBottom: "25px" }}>
                 <label
                   style={{
                     display: "block",
                     marginBottom: "6px",
-                    fontWeight: "600",
-                    fontSize: "14px",
+                    fontSize: "13px",
+                    color: "#cbd5e1",
                   }}
                 >
                   Password
                 </label>
                 <input
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="••••••••"
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   style={{
                     width: "100%",
                     padding: "12px",
-                    borderRadius: "8px",
-                    border: "1px solid #cbd5e1",
+                    borderRadius: "4px",
+                    background: "#0f172a",
+                    border: "1px solid #334155",
+                    color: "#fff",
                     outline: "none",
                   }}
                   required
@@ -2047,47 +2781,47 @@ function App() {
               <button
                 type="submit"
                 style={{
-                  background: "#0056b3",
+                  background: "#d97706",
                   color: "#fff",
                   border: "none",
                   width: "100%",
                   padding: "14px",
-                  borderRadius: "8px",
-                  fontWeight: "700",
+                  borderRadius: "4px",
+                  fontWeight: "800",
                   cursor: "pointer",
-                  fontSize: "15px",
-                  marginBottom: "15px",
+                  fontSize: "14px",
+                  letterSpacing: "1px",
+                  marginBottom: "20px",
                 }}
               >
-                {isSigningUp ? "Create Account" : "Login"}
+                {isSigningUp ? "CREATE ACCOUNT" : "SIGN IN"}
               </button>
             </form>
 
             <div
               style={{
                 textAlign: "center",
-                fontSize: "14px",
-                color: "#64748b",
-                borderTop: "1px solid #f1f5f9",
-                paddingTop: "15px",
+                fontSize: "13px",
+                color: "#94a3b8",
+                borderTop: "1px solid #1e293b",
+                paddingTop: "18px",
               }}
             >
               {isSigningUp ? (
                 <p>
-                  Already have an account?{" "}
+                  Already registered?{" "}
                   <span
                     onClick={() => {
                       setIsSigningUp(false);
                       setAuthError("");
                     }}
                     style={{
-                      color: "#0056b3",
+                      color: "#fbbf24",
                       fontWeight: "700",
                       cursor: "pointer",
-                      textDecoration: "underline",
                     }}
                   >
-                    Login here
+                    Sign In here
                   </span>
                 </p>
               ) : (
@@ -2099,10 +2833,9 @@ function App() {
                       setAuthError("");
                     }}
                     style={{
-                      color: "#0056b3",
+                      color: "#fbbf24",
                       fontWeight: "700",
                       cursor: "pointer",
-                      textDecoration: "underline",
                     }}
                   >
                     Create new account
@@ -2117,31 +2850,32 @@ function App() {
         {currentView === "profile" && currentUser && (
           <div
             style={{
-              background: "#fff",
-              padding: "40px",
-              borderRadius: "20px",
+              background: "#090d16",
+              padding: "45px",
+              borderRadius: "12px",
               maxWidth: "500px",
               margin: "30px auto",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+              border: "1px solid #1e293b",
               textAlign: "center",
-              border: "1px solid #e2e8f0",
+              fontFamily: "sans-serif",
             }}
           >
-            <div style={{ fontSize: "64px", marginBottom: "10px" }}>👤</div>
+            <div style={{ fontSize: "64px", marginBottom: "15px" }}>👤</div>
             <h2
               style={{
-                fontSize: "26px",
-                fontWeight: "800",
+                fontSize: "28px",
+                fontWeight: "400",
                 marginBottom: "4px",
-                color: "#0f172a",
+                color: "#f8fafc",
+                fontFamily: "serif",
               }}
             >
               {currentUser.name}
             </h2>
             <p
               style={{
-                color: "#64748b",
-                marginBottom: "25px",
+                color: "#94a3b8",
+                marginBottom: "30px",
                 fontSize: "14px",
               }}
             >
@@ -2150,46 +2884,48 @@ function App() {
 
             <div
               style={{
-                background: "#f8fafc",
+                background: "#0f172a",
                 padding: "20px",
-                borderRadius: "12px",
-                marginBottom: "25px",
+                borderRadius: "8px",
+                marginBottom: "30px",
                 textAlign: "left",
-                border: "1px solid #e2e8f0",
+                border: "1px solid #1e293b",
+                fontSize: "14px",
+                color: "#cbd5e1",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
               }}
             >
-              <p style={{ margin: "8px 0", fontSize: "14px" }}>
-                📍 <b>Delivery Location:</b> {location}
+              <p style={{ margin: 0 }}>
+                📍 <b>Location:</b> {location}
               </p>
-              <p style={{ margin: "8px 0", fontSize: "14px" }}>
+              <p style={{ margin: 0 }}>
                 🥛 <b>Active Subscriptions:</b>{" "}
-                {subscriptions.filter((s) => s.status === "Active").length}{" "}
+                {userSubscriptions.filter((s) => s.status === "Active").length}{" "}
                 Active
               </p>
-              <p style={{ margin: "8px 0", fontSize: "14px" }}>
-                📦 <b>Total Orders Placed:</b> {orders.length} Orders
+              <p style={{ margin: 0 }}>
+                📦 <b>Total Orders:</b> {userOrders.length} Orders
               </p>
             </div>
 
             <button
-              onClick={() => {
-                setCurrentUser(null);
-                setCurrentView("home");
-                showToast("Logged out successfully.");
-              }}
+              onClick={handleLogout}
               style={{
-                background: "#fee2e2",
-                color: "#991b1b",
+                background: "#7f1d1d",
+                color: "#fca5a5",
                 border: "none",
                 width: "100%",
                 padding: "12px",
-                borderRadius: "8px",
-                fontWeight: "700",
+                borderRadius: "4px",
+                fontWeight: "800",
                 cursor: "pointer",
-                fontSize: "15px",
+                fontSize: "13px",
+                letterSpacing: "1px",
               }}
             >
-              Logout Account
+              LOGOUT ACCOUNT
             </button>
           </div>
         )}
@@ -2202,11 +2938,11 @@ const navLinkStyle = (isActive) => ({
   background: "none",
   border: "none",
   cursor: "pointer",
-  fontSize: "15px",
+  fontSize: "12px",
   fontWeight: isActive ? "800" : "600",
-  color: isActive ? "#0056b3" : "#475569",
+  color: isActive ? "#fbbf24" : "#cbd5e1",
   padding: "6px 0",
-  borderBottom: isActive ? "2px solid #0056b3" : "none",
+  borderBottom: isActive ? "2px solid #fbbf24" : "none",
 });
 
 export default App;
